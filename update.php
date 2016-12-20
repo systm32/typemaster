@@ -49,21 +49,51 @@
 
 <script  src="js/jquery.js" charset="utf-8"></script>
 <script  charset="utf-8">
+function getNumberOfWords(text)
+	{
+		text = text.trim();
+		var count = 0;
+		arr = text.split(" ");
+		return arr.length;
+	}
+
 	$(document).ready(function(){
 		$('#add_english').click(function(){
 			var eng_text = $('#eng_text').val();
 			var eng_level = $('#e_l').val();
-			$.post( "update1.php", { 'tag': "1", 'val': eng_text , 'level':eng_level }).done(function( data ) {
-			    console.log( "Data Loaded: " + data );
-			});
+			if(getNumberOfWords(eng_text)==0)
+			{
+				alert("No. of words is not equal to 300");
+			}
+			else if(eng_level.trim().length == 0)
+			{
+				alert("Level required");
+			}
+			else
+			{
+				$.post( "update1.php", { 'tag': "1", 'val': eng_text , 'level':eng_level }).done(function( data ) {
+				    alert("Added");
+				});
+			}
 		});
 		$('#add_punjabi').click(function(){
 			var pun_text = $('#pun_text').val();
 			alert(pun_text);
 			var pun_level = $('#p_l').val();
-			$.post( "update1.php", { 'tag': "2", 'val': pun_text  , 'level':pun_level },"application/json; charset=utf-8").done(function( data ) {
-			    console.log( "Data Loaded: " + data );
-			});
+			if(getNumberOfWords(pun_text)==0)
+			{
+				alert("No. of words is not equal to 300");
+			}
+			else if(pun_level.trim().length == 0)
+			{
+				alert("Level required");
+			}
+			else
+			{
+				$.post( "update1.php", { 'tag': "2", 'val': pun_text  , 'level':pun_level },"application/json; charset=utf-8").done(function( data ) {
+				    alert("Added");
+				});
+			}
 		});
 	});
 </script>

@@ -26,13 +26,12 @@
 
 
 .noselect {
-   cursor: default;
-   -webkit-user-select: none;
    -webkit-touch-callout: none;
-   -khtml-user-select: none;
-   -moz-user-select: none;
-   -ms-user-select: none;
-   -o-user-select: none;
+	webkit-user-select: none;
+    khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+     user-select: none;
 }
 
 .noselect:focus {
@@ -43,12 +42,6 @@
 </head>
 
 <body>
-	<ul id="dropdown1" class="dropdown-content">
-	  <li><a href="#!">one</a></li>
-	  <li><a href="#!">two</a></li>
-	  <li class="divider"></li>
-	  <li><a href="#!">three</a></li>
-	</ul>
 
     <nav>
       <div class="nav-wrapper">
@@ -63,16 +56,37 @@
     </nav>
 
     <div>
+
+
+
     	<div style="padding: 20px">
     		<div style="width: 50%;float: left;">
-    			<a id="rep" class="waves-effect waves-light btn" style="margin: [20px,0,20px,0]" href="#" ><b>Repeat</b></a>
-    			<a id="strt" class="waves-effect waves-light btn" href="#" style="margin: [20px,0,20px,0]"><b>Start</b></a>
+    			<a id="rep" class="waves-effect waves-light btn modal-trigger" href="#modal1" style="margin: [20px,0,20px,0]" href="#" ><b>Repeat</b></a>
+    			<a id="strt" class="waves-effect waves-light btn modal-trigger" href="#modal1" style="margin: [20px,0,20px,0]"><b>Start</b></a>
+
+				  <!-- Modal Structure -->
+				  <div id="modal1" class="modal">
+				    <div class="modal-content">
+				      <label>Select time to complete the task !</label>
+					  <select id="tm-sel" class="browser-default">
+					    <option value="5" disabled selected>Choose your option</option>
+					    <option value="2">2 Minutes</option>
+					    <option value="3">3 Minutes</option>
+					    <option value="5">5 Minutes</option>
+					  </select>
+				    </div>
+				    <div class="modal-footer">
+				      <a href="#!" id="set" class=" modal-action modal-close waves-effect waves-green btn-flat">Set</a>
+				    </div>
+				  </div>
     		</div>
 
     		<div style="width: 50%;float: left;">
-				<span style="margin: 8px;font-size: 30px">Time Remaining : </span><span style = "font-size:30px " id="clock">5:00</span>    			
+				<span style="margin: 8px;font-size: 30px">Time Remaining : </span><span style = "font-size:30px " id="clock">_:__</span>    			
     		</div>
     	</div>
+
+
 
     	<div style="padding: 20px">
 
@@ -83,29 +97,37 @@
 	    			<span>Total words written: </span>
 	    			<span id="total_written_words">0</span>
 	    		</b>
+	    		<div>
+	    				<p>
+	    				<input type="checkbox" id="highlight" checked="checked" />
+      					<label for="highlight">Do you want to highlight current word?</label>
+	    				</p>
+	    				<div style="width: 100%">
+    		<a id = "submit" class="waves-effect waves-light btn" style="float:right;margin: 0px"  ><b>&nbsp Submit &nbsp</b></a>
+    	</div>	
+	    		</div>
 	    	</div>
 
 	    	<div style="width: 49%;float: left">	    		
 	    		<span>Current Level : </span><span id="curr_level">1</span>
-	    		<div id="def_wr" style="height: 300px;border:3px solid blue;resize: none;padding: 10px;font-size: 18px" readonly></div>
+	    		<div id="def_wr" style="height: 300px;border:3px solid blue;resize: none;padding: 10px;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>Click on start button to start !</div>
 	       		<b>
 	    		<span>Total words : </span>
-	    		<span id = "total_words">26</span>
+	    		<span id = "total_words">0</span>
 	    		</b>
 	    	</div>
 
     	</div>
-
-    	<div style="margin:20px">
-    		<a id = "submit" class="waves-effect waves-light btn" style="float:right" href="punjabi" ><b>&nbsp Submit &nbsp</b></a>
-    	</div>	
+	
 
     	<div hidden>
     		<p id="loaded_text"></p>
     		<span id="num_back">0</span>
+    		<span id="deadline">5</span>
     	</div>
     </div>
 
+<script src="../js/materialize.js"></script> 	
 <script  src="js/jquery.js" charset="utf-8"></script>
 <script  charset="utf-8">
 
@@ -119,6 +141,11 @@ var timeinterval;
 	function getWrittenText()
 	{
 		return $('#usr_wr').val();
+	}
+
+	function isChecked()
+	{
+		return $('#highlight').prop("checked");
 	}
 
 	function presentText(text)
@@ -173,6 +200,7 @@ var timeinterval;
 			    $('#def_wr').text(presentText(data));
 			    $('#loaded_text').text(presentText(data));			    
 				$('#total_words').text(getNumberOfWords(presentText(data)));
+				$('#usr_wr').text("");			
 			});
 	}
 
@@ -180,7 +208,8 @@ var timeinterval;
 	{
 		$('#def_wr').text(presentText(data));
 		$('#loaded_text').text(presentText(data));			    
-		$('#total_words').text(getNumberOfWords(presentText(getDefaultText())));
+		$('#total_words').text(getNumberOfWords(presentText(data)));
+		$('#usr_wr').text("");
 	}
 
 	function getTimeRemaining(endtime){
@@ -213,6 +242,7 @@ var timeinterval;
 	    clock.innerHTML = t.minutes + ":"+t.seconds;
 	    if(t.total<=0){
 	      clearInterval(timeinterval);
+	      $('#submit').click();
 	    }
 	  },1000);
 	}
@@ -268,7 +298,30 @@ var timeinterval;
 		var correct = Math.floor(getNumberOfCorrectWords(def_text,usr_text));
 		var t_act_words = Math.floor(getNumberOfWords(def_text));
 		var accuracy = (correct*100)/t_act_words;
-		return accuracy;
+		return Math.round(accuracy*100)/100;
+	}
+
+	function disableUserTextarea()
+	{
+		$('#rep').attr('class','btn disabled');$('#rep').attr('href','#');
+		$('#rep').attr('href','#');
+		$('#usr_wr').prop("disabled",true);
+	}
+
+	function enableUserTextarea()
+	{
+		$('#rep').attr('class','waves-effect waves-light btn modal-trigger');
+		$('#rep').attr('href','#modal1');
+		$('#usr_wr').prop("disabled",false);
+	}
+
+	function resetIt()
+	{
+		disableUserTextarea();
+		$('#total_words').text("0");
+		$('#usr_wr').text("");
+		$('#def_wr').text("Click on start button to start !");
+		clearInterval(timeinterval);		
 	}
 
 	function getTypingSpeed(def_text,usr_text)
@@ -276,23 +329,29 @@ var timeinterval;
 		var correct = Math.floor(getNumberOfCorrectWords(def_text,usr_text));
 		var t = $('#clock').text();
 		var s = t.split(":");
-		var min = parseInt(s[0]);
-		var sec = parseInt(s[1])/60.0;
-		var min = min + sec;
+		var min = 5-parseInt(s[0]);
+		var sec = 60-parseInt(s[1]);
+		var total = min*60+sec;
+		var min = total/60;
 		var t_speed = correct/min;
 		return t_speed;
 	}
 
 	$('document').ready(function(){
+		$('#usr_wr').text("");
+		$('.modal-trigger').leanModal();
+		disableUserTextarea();
 		$('#usr_wr').keyup(function(event){
 			getAndSetNumberOfWords();
-			highlightword();
+			if(isChecked())
+			{
+				highlightword();
+			}
 			var key = event.keyCode || event.charCode;
 
 			if(key == 8)
 			{
 				var n = Math.floor($('#num_back').text());
-				alert(n);
 				$('#num_back').text(n+1);
 			}
 		});
@@ -301,28 +360,57 @@ var timeinterval;
 		});
 
 		$('#p-l1').click(function(){
+			resetIt();
 			setPresentLevel(1);
-			getAndSetDefaultText();
+	//		getAndSetDefaultText();
 		});
 		$('#p-l2').click(function(){
+			resetIt();
 			setPresentLevel(2);
-			getAndSetDefaultText();
+	//		getAndSetDefaultText();
 		});
 		$('#p-l3').click(function(){
+			resetIt();
 			setPresentLevel(3);
-			getAndSetDefaultText();
+	//		getAndSetDefaultText();
 		});
 		$('#rep').click(function(){
-			clearInterval(timeinterval);
-			getAndSetDefaultText1($('#loaded_text').text());
-			var deadline = Date.parse(new Date())+5*60*1000;
-			initializeClock('clock',deadline);
+			if($('#rep').attr('class') != 'btn disabled')
+			{
+				$('#num_back').text("0");
+				clearInterval(timeinterval);
+				getAndSetDefaultText1($('#loaded_text').text());
+			}
 		});
 		$('#strt').click(function(){
+			resetIt();
+			$('#num_back').text("0");
 			clearInterval(timeinterval);
+			enableUserTextarea();
 			getAndSetDefaultText();
-			var deadline = Date.parse(new Date())+5*60*1000;
+		});
+
+		$('#set').click(function(){
+			var tm = parseInt($('#tm-sel').val());
+			var deadline = Date.parse(new Date())+tm*60*1000;
 			initializeClock('clock',deadline);
+		});
+		$('#submit').click(function(){
+			var num_back = $('#num_back').text();
+			var accuracy = getAccuracy($('#loaded_text').text(),$('#usr_wr').val());
+			var type_speed = Math.ceil(getTypingSpeed($('#loaded_text').text(),$('#usr_wr').val()));
+			window.location = "result.php?back="+num_back+"&acc="+accuracy+"&ts="+type_speed;
+		});
+		$('#highlight').change(function()
+		{
+			if(isChecked())
+			{	
+				highlightword();
+			}
+			else
+			{
+				$('#def_wr').html($('#loaded_text').html());
+			}
 		});
 	});
 

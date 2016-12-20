@@ -26,13 +26,13 @@
 	<hr>
 	<br>
 	<span><img src="../img/accuracy.png" style="width: 50px;height: 50px"></img><span style="width: 50px;height: 50px;font-size:25px ">Accuracy &nbsp&nbsp&nbsp</span></span>
-	<span id = "acc" style="font-size: 70px">50</span><span style="font-size: 25px">%</span>
+	<span id = "acc" style="font-size: 70px"><?php echo $_REQUEST['acc']; ?></span><span style="font-size: 25px">%</span>
 	<br>
 	<span><img src="../img/type_speed.png" style="width: 70px;height: 50px"></img><span style="width: 50px;height: 50px;font-size:25px ">Type Speed &nbsp&nbsp&nbsp</span></span>
-	<span id = "ts" style="font-size: 70px">50</span><span style="font-size: 25px">wpm</span>
+	<span id = "ts" style="font-size: 70px"><?php echo $_REQUEST['ts']; ?></span><span style="font-size: 25px">wpm</span>
 	<br>
 	<span><img src="../img/backspace.png" style="width: 80px;height: 50px"></img><span style="width: 50px;height: 50px;font-size:25px ">Number of Backspaces &nbsp&nbsp&nbsp</span></span>
-	<span id = "back" style="font-size: 70px">50</span>
+	<span id = "back" style="font-size: 70px"><?php echo $_REQUEST['back'];?></span>
 
 	<div style="margin: 30px">
 		<a class="waves-effect waves-light btn-large" href="/typemaster/english" ><b>&nbsp &nbsp Start Again &nbsp &nbsp </b></a>
