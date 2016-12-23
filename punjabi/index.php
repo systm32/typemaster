@@ -109,7 +109,7 @@
 
 	    	<div style="width: 49%;float: left" class="noselect">	    		
 	    		<span>ਮੌਜੂਦਾ ਪੱਧਰ : </span><span id="curr_level">1</span>
-	    		<div id="def_wr" style="height: 300px;border:3px solid blue;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly></div>
+	    		<div id="def_wr" style="height: 300px;border:3px solid blue;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!</div>
 	       		<b>
 	    		<span>ਕੁੱਲ ਸ਼ਬਦ ਦੀ ਗਿਣਤੀ : </span>
 	    		<span id = "total_words">0</span>
@@ -200,7 +200,7 @@ var timeinterval;
 			    $('#def_wr').text(presentText(data));
 			    $('#loaded_text').text(presentText(data));			    
 				$('#total_words').text(getNumberOfWords(presentText(data)));
-				$('#usr_wr').text("");			
+				$("#usr_wr").val(''); 			
 			});
 	}
 
@@ -209,7 +209,7 @@ var timeinterval;
 		$('#def_wr').text(presentText(data));
 		$('#loaded_text').text(presentText(data));			    
 		$('#total_words').text(getNumberOfWords(presentText(data)));
-		$('#usr_wr').text("");
+		$("#usr_wr").val(''); 
 	}
 
 	function getTimeRemaining(endtime){
@@ -218,7 +218,7 @@ var timeinterval;
   	  var minutes = Math.floor( (t/1000/60) % 60 );
   	  if(seconds/10<1)
   	  {
-  	  	console.log("Here");
+  	//  	console.log("Here");
   	  	secs = "0"+seconds;
   	  }
   	  else
@@ -317,10 +317,10 @@ var timeinterval;
 
 	function resetIt()
 	{
-		disableUserTextarea();
 		$('#total_words').text("0");
-		$('#usr_wr').text("");
-		$('#def_wr').text("Click on start button to start !");
+		$("#usr_wr").val(''); 
+		$('#def_wr').text("ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!");
+		disableUserTextarea();
 		clearInterval(timeinterval);		
 	}
 

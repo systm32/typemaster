@@ -200,7 +200,7 @@ var timeinterval;
 			    $('#def_wr').text(presentText(data));
 			    $('#loaded_text').text(presentText(data));			    
 				$('#total_words').text(getNumberOfWords(presentText(data)));
-				$('#usr_wr').text("");			
+				$('#usr_wr').val('');			
 			});
 	}
 
@@ -209,7 +209,7 @@ var timeinterval;
 		$('#def_wr').text(presentText(data));
 		$('#loaded_text').text(presentText(data));			    
 		$('#total_words').text(getNumberOfWords(presentText(data)));
-		$('#usr_wr').text("");
+		$('#usr_wr').val('');
 	}
 
 	function getTimeRemaining(endtime){
@@ -218,7 +218,7 @@ var timeinterval;
   	  var minutes = Math.floor( (t/1000/60) % 60 );
   	  if(seconds/10<1)
   	  {
-  	  	console.log("Here");
+  	//  	console.log("Here");
   	  	secs = "0"+seconds;
   	  }
   	  else
@@ -319,7 +319,7 @@ var timeinterval;
 	{
 		disableUserTextarea();
 		$('#total_words').text("0");
-		$('#usr_wr').text("");
+		$('#usr_wr').val('');
 		$('#def_wr').text("Click on start button to start !");
 		clearInterval(timeinterval);		
 	}

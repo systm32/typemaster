@@ -78,7 +78,6 @@ function getNumberOfWords(text)
 		});
 		$('#add_punjabi').click(function(){
 			var pun_text = $('#pun_text').val();
-			alert(pun_text);
 			var pun_level = $('#p_l').val();
 			if(getNumberOfWords(pun_text)==0)
 			{
