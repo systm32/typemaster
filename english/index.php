@@ -69,8 +69,7 @@
 				    <div class="modal-content">
 				      <label>Select time to complete the task !</label>
 					  <select id="tm-sel" class="browser-default">
-					    <option value="5" disabled selected>Choose your option</option>
-					    <option value="2">2 Minutes</option>
+					    <option value="2" selected>2 Minutes</option>
 					    <option value="3">3 Minutes</option>
 					    <option value="5">5 Minutes</option>
 					  </select>
@@ -339,7 +338,7 @@ var timeinterval;
 
 	$('document').ready(function(){
 		$('#usr_wr').text("");
-		$('.modal-trigger').leanModal();
+		$('.modal-trigger').leanModal({dismissible: false});
 		disableUserTextarea();
 		$('#usr_wr').keyup(function(event){
 			getAndSetNumberOfWords();
