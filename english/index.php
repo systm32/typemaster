@@ -1,3 +1,5 @@
+<?php require '../db.php'; ?>
+
 <html>
 <head>
 <title>English Typing</title>
@@ -73,6 +75,16 @@
 					    <option value="3">3 Minutes</option>
 					    <option value="5">5 Minutes</option>
 					  </select>
+
+					  <label>Select paragraph !</label>
+					  <select id="p-sel" class="browser-default">
+					  	
+					  </select>	
+
+					  <br><br>
+					  <label>
+					  	Repeat button activate after 300 words !
+					  </label>
 				    </div>
 				    <div class="modal-footer">
 				      <a href="#!" id="set" class=" modal-action modal-close waves-effect waves-green btn-flat">Set</a>
@@ -91,7 +103,7 @@
 
 	    	<div style="width: 49%;float: right">
 	    		<span>&nbsp</span>
-	    		<textarea id="usr_wr"  style="height: 300px;border:3px solid red;resize: none;padding: 10px;font-size: 18px" autofocus=""></textarea>
+	    		<textarea id="usr_wr"  style="height: 300px;border:3px solid red;resize: none;padding: 10px;font-size: 18px;" autofocus=""></textarea>
 	    		<b>
 	    			<span>Total words written: </span>
 	    			<span id="total_written_words">0</span>
@@ -109,7 +121,7 @@
 
 	    	<div style="width: 49%;float: left">	    		
 	    		<span>Current Level : </span><span id="curr_level">1</span>
-	    		<div id="def_wr" style="height: 300px;border:3px solid blue;resize: none;padding: 10px;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>Click on start button to start !</div>
+	    		<div id="def_wr" style="height: 300px;overflow:scroll;border:3px solid blue;resize: none;padding: 10px;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>Click on start button to start !</div>
 	       		<b>
 	    		<span>Total words : </span>
 	    		<span id = "total_words">0</span>
@@ -123,6 +135,7 @@
     		<p id="loaded_text"></p>
     		<span id="num_back">0</span>
     		<span id="deadline">5</span>
+    		<span id="rep_len">20</span>
     	</div>
     </div>
 
@@ -193,21 +206,19 @@ var timeinterval;
 		$('#curr_level').text(l);
 	}
 
-	function getAndSetDefaultText()
+	function getAndSetDefaultText(data)
 	{
-		$.get( "http://localhost/typemaster/update1.php", { 'tag': "3", 'level':getPresentLevel() }).done(function( data ) {
-			    $('#def_wr').text(presentText(data));
-			    $('#loaded_text').text(presentText(data));			    
-				$('#total_words').text(getNumberOfWords(presentText(data)));
-				$('#usr_wr').val('');			
-			});
+	    $('#def_wr').text(data);
+	    $('#loaded_text').text(data);			    
+		$('#total_words').text(getNumberOfWords(presentText(data)));
+		$('#usr_wr').val('');			
 	}
 
 	function getAndSetDefaultText1(data)
 	{
 		$('#def_wr').text(presentText(data));
 		$('#loaded_text').text(presentText(data));			    
-		$('#total_words').text(getNumberOfWords(presentText(data)));
+		$('#total_words').text(getNumberOfWords(data));
 		$('#usr_wr').val('');
 	}
 
@@ -281,10 +292,11 @@ var timeinterval;
 		var arr2 = usr_text.split(" ");
 		var t_act_words = arr1.length;
 		var t_wr_words = arr2.length;
+		var rep_len = $('#rep_len').text();
 		var correct = 0;
-		for(var i=0;i<t_wr_words && i<t_act_words;i++)
+		for(var i=0,j=0;i<t_wr_words;i++,j=(j+1)%rep_len)
 		{
-			if(arr1[i].length>0 && arr2[i].length>0 && arr1[i] == arr2[i])
+			if(arr1[j].length>0 && arr2[i].length>0 && arr1[j] == arr2[i])
 			{
 				correct = correct + 1;
 			}
@@ -300,23 +312,33 @@ var timeinterval;
 		return Math.round(accuracy*100)/100;
 	}
 
-	function disableUserTextarea()
+	function deactivateRepeatButton()
 	{
 		$('#rep').attr('class','btn disabled');$('#rep').attr('href','#');
+	}
+
+	function activateRepeatButton()
+	{
+		$('#rep').attr('class','waves-effect waves-light btn modal-trigger');
+	}
+
+	function disableUserTextarea()
+	{
 		$('#rep').attr('href','#');
 		$('#usr_wr').prop("disabled",true);
 	}
 
 	function enableUserTextarea()
 	{
-		$('#rep').attr('class','waves-effect waves-light btn modal-trigger');
 		$('#rep').attr('href','#modal1');
 		$('#usr_wr').prop("disabled",false);
 	}
 
 	function resetIt()
-	{
+	{	
+		deactivateRepeatButton();
 		disableUserTextarea();
+		$('#rep').show();
 		$('#total_words').text("0");
 		$('#usr_wr').val('');
 		$('#def_wr').text("Click on start button to start !");
@@ -336,12 +358,34 @@ var timeinterval;
 		return t_speed;
 	}
 
+	function showParagraphs(){
+		$.get( "http://localhost/typemaster/update1.php", { 'tag': "5", 'level':getPresentLevel() }).done(function( data ) {
+			    var para_array = JSON.parse(data);
+			    var html = '';
+			    for(var i=0;i<para_array.length;i++)
+			    {
+			    	html += '<option style="overflow:hidden" value="'+encodeURI(para_array[i].value)+'">'+para_array[i].value.substr(0,70)+'...'+'</option>';
+			    }
+			    $('#p-sel').html(html);
+			});
+	}
+
 	$('document').ready(function(){
+		deactivateRepeatButton();
 		$('#usr_wr').text("");
 		$('.modal-trigger').leanModal({dismissible: false});
 		disableUserTextarea();
 		$('#usr_wr').keyup(function(event){
 			getAndSetNumberOfWords();
+			if(getNumberOfWords($('#usr_wr').val()) >= 20)
+			{
+				activateRepeatButton();
+			}
+			else
+			{
+				deactivateRepeatButton();
+			}
+
 			if(isChecked())
 			{
 				highlightword();
@@ -376,9 +420,8 @@ var timeinterval;
 		$('#rep').click(function(){
 			if($('#rep').attr('class') != 'btn disabled')
 			{
-				$('#num_back').text("0");
-				clearInterval(timeinterval);
-				getAndSetDefaultText1($('#loaded_text').text());
+				$('#rep_len').text(getNumberOfWords($('#usr_wr').val()));
+				$('#rep').hide();
 			}
 		});
 		$('#strt').click(function(){
@@ -386,11 +429,13 @@ var timeinterval;
 			$('#num_back').text("0");
 			clearInterval(timeinterval);
 			enableUserTextarea();
-			getAndSetDefaultText();
+			showParagraphs();
 		});
 
 		$('#set').click(function(){
 			var tm = parseInt($('#tm-sel').val());
+			var txt = decodeURI($('#p-sel').val());
+			getAndSetDefaultText(txt);
 			var deadline = Date.parse(new Date())+tm*60*1000;
 			initializeClock('clock',deadline);
 		});

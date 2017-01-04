@@ -95,6 +95,48 @@ function getRandomFromPunjabiDatabase($conn,$level)
 	}
 }
 
+function getAllFromEnglishDatabase($conn,$level)
+{
+	$query = "SELECT * FROM `english` WHERE level = $level";
+	if($result = mysqli_query($conn,$query))
+	{
+		$len = mysqli_num_rows($result);
+		$data = array();
+		while($row = mysqli_fetch_assoc($result))
+		{
+			array_push($data,$row);
+		}
+		return json_encode($data);
+	}
+	else
+	{
+		echo mysqli_error($conn);
+		return false;
+	}
+}
+
+
+function getAllFromPunjabiDatabase($conn,$level)
+{
+	mysqli_set_charset($conn,'utf8');
+	$query=  "SELECT * FROM `punjabi` WHERE level = '$level'";
+	if($result = mysqli_query($conn,$query))
+	{
+		$len = mysqli_num_rows($result);
+		$data = array();
+		while($row = mysqli_fetch_assoc($result))
+		{
+			array_push($data,$row);
+		}
+		return json_encode($data);
+	}
+	else
+	{
+		echo mysqli_error($conn);
+		return false;
+	}
+}
+
 $tag = $_REQUEST['tag'];
 
 if($tag == '1')
@@ -118,6 +160,16 @@ else if($tag == '4')
 {
 	$level = $_REQUEST['level'];
 	echo getRandomFromPunjabiDatabase($conn,$level);
+}
+else if($tag == '5')
+{
+	$level = $_REQUEST['level'];
+	echo getAllFromEnglishDatabase($conn,$level);
+}
+else if($tag == '6')
+{
+	$level = $_REQUEST['level'];
+	echo getAllFromPunjabiDatabase($conn,$level);
 }
 
 
