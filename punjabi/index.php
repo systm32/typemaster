@@ -24,6 +24,9 @@
     src: url("../fonts/ASEES.TTF");
 }
 
+::-webkit-scrollbar { 
+    display: none; 
+}
 
 .noselect {
    cursor: default;
@@ -65,12 +68,22 @@
 				  <!-- Modal Structure -->
 				  <div id="modal1" class="modal">
 				    <div class="modal-content">
-				      <label>Select time to complete the task !</label>
+				      <label>ਕੰਮ ਨੂੰ ਪੂਰਾ ਕਰਨ ਲਈ ਵਾਰ ਦੀ ਚੋਣ !</label>
 					  <select id="tm-sel" class="browser-default">
-					    <option value="2" selected>2 Minutes</option>
-					    <option value="3">3 Minutes</option>
-					    <option value="5">5 Minutes</option>
+					    <option value="2" selected>2 ਮਿੰਟ</option>
+					    <option value="3">3 ਮਿੰਟ</option>
+					    <option value="5">5 ਮਿੰਟ</option>
 					  </select>
+
+					  <label>	ਪੈਰਾ ਚੁਣੋ !</label>
+					  <select id="p-sel" class="browser-default" style="font-family: PunjabiFont">
+					  	 
+					  </select>	
+
+					  <br><br>
+					  <label>
+					  	Repeat button activate after you complete the paragraph once !
+					  </label>
 				    </div>
 				    <div class="modal-footer">
 				      <a href="#!" id="set" class=" modal-action modal-close waves-effect waves-green btn-flat">Set</a>
@@ -108,7 +121,7 @@
 
 	    	<div style="width: 49%;float: left" class="noselect">	    		
 	    		<span>ਮੌਜੂਦਾ ਪੱਧਰ : </span><span id="curr_level">1</span>
-	    		<div id="def_wr" style="height: 300px;border:3px solid blue;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!</div>
+	    		<div id="def_wr" style="height: 300px;overflow:scroll;border:3px solid blue;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!</div>
 	       		<b>
 	    		<span>ਕੁੱਲ ਸ਼ਬਦ ਦੀ ਗਿਣਤੀ : </span>
 	    		<span id = "total_words">0</span>
@@ -123,6 +136,7 @@
     		<p id="loaded_text"></p>
     		<span id="num_back">0</span>
     		<span id="deadline">5</span>
+    		<span id="rep_len">20</span>
     	</div>
     </div>
 
@@ -193,22 +207,21 @@ var timeinterval;
 		$('#curr_level').text(l);
 	}
 
-	function getAndSetDefaultText()
+	function getAndSetDefaultText(data)
 	{
-		$.get( "http://localhost/typemaster/update1.php", { 'tag': "3", 'level':getPresentLevel() }).done(function( data ) {
-			    $('#def_wr').text(presentText(data));
-			    $('#loaded_text').text(presentText(data));			    
-				$('#total_words').text(getNumberOfWords(presentText(data)));
-				$("#usr_wr").val(''); 			
-			});
+	    $('#def_wr').text(data);
+	    $('#loaded_text').text(data);			    
+		$('#total_words').text(getNumberOfWords(presentText(data)));
+		$('#rep_len').text(getNumberOfWords(data));
+		$('#usr_wr').val('');			
 	}
 
 	function getAndSetDefaultText1(data)
 	{
 		$('#def_wr').text(presentText(data));
 		$('#loaded_text').text(presentText(data));			    
-		$('#total_words').text(getNumberOfWords(presentText(data)));
-		$("#usr_wr").val(''); 
+		$('#total_words').text(getNumberOfWords(data));
+		$('#usr_wr').val('');
 	}
 
 	function getTimeRemaining(endtime){
@@ -281,11 +294,14 @@ var timeinterval;
 		var arr2 = usr_text.split(" ");
 		var t_act_words = arr1.length;
 		var t_wr_words = arr2.length;
+		var rep_len = $('#rep_len').text();
 		var correct = 0;
-		for(var i=0;i<t_wr_words && i<t_act_words;i++)
+		for(var i=0,j=0;i<t_wr_words;i++,j=(j+1)%rep_len)
 		{
-			if(arr1[i].length>0 && arr2[i].length>0 && arr1[i] == arr2[i])
+			if(arr1[j].length>0 && arr2[i].length>0 && arr1[j] == arr2[i])
 			{
+				console.log(i+"="+j);
+				console.log(arr1[j]+"="+arr2[i]);
 				correct = correct + 1;
 			}
 		}
@@ -294,32 +310,45 @@ var timeinterval;
 
 	function getAccuracy(def_text,usr_text)
 	{
+		console.log($('#rep_len').text());
 		var correct = Math.floor(getNumberOfCorrectWords(def_text,usr_text));
-		var t_act_words = Math.floor(getNumberOfWords(def_text));
+		var t_act_words = Math.floor(getNumberOfWords(usr_text));
 		var accuracy = (correct*100)/t_act_words;
+		console.log(correct);
+		console.log(t_act_words);
 		return Math.round(accuracy*100)/100;
+	}
+
+	function deactivateRepeatButton()
+	{
+		$('#rep').attr('class','btn disabled');$('#rep').attr('href','#');
+	}
+
+	function activateRepeatButton()
+	{
+		$('#rep').attr('class','waves-effect waves-light btn modal-trigger');
 	}
 
 	function disableUserTextarea()
 	{
-		$('#rep').attr('class','btn disabled');$('#rep').attr('href','#');
 		$('#rep').attr('href','#');
 		$('#usr_wr').prop("disabled",true);
 	}
 
 	function enableUserTextarea()
 	{
-		$('#rep').attr('class','waves-effect waves-light btn modal-trigger');
 		$('#rep').attr('href','#modal1');
 		$('#usr_wr').prop("disabled",false);
 	}
 
 	function resetIt()
-	{
-		$('#total_words').text("0");
-		$("#usr_wr").val(''); 
-		$('#def_wr').text("ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!");
+	{	
+		deactivateRepeatButton();
 		disableUserTextarea();
+		$('#rep').show();
+		$('#total_words').text("0");
+		$('#usr_wr').val('');
+		$('#def_wr').text("ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!");
 		clearInterval(timeinterval);		
 	}
 
@@ -336,13 +365,34 @@ var timeinterval;
 		return t_speed;
 	}
 
+	function showParagraphs(){
+		$.get( "http://localhost/typemaster/update1.php", { 'tag': "6", 'level':getPresentLevel() }).done(function( data ) {
+			    var para_array = JSON.parse(data);
+			    var html = '';
+			    for(var i=0;i<para_array.length;i++)
+			    {
+			    	html += '<option style="overflow:hidden;font-family:PunjabiFont" value="'+encodeURI(para_array[i].value)+'">'+para_array[i].value.substr(0,70)+'...'+'</option>';
+			    }
+			    $('#p-sel').html(html);
+			});
+	}
+
 	$('document').ready(function(){
+		deactivateRepeatButton();
 		$('#usr_wr').text("");
-		$('.modal-trigger').leanModal(
-			{dismissible: false});
+		$('.modal-trigger').leanModal({dismissible: false});
 		disableUserTextarea();
 		$('#usr_wr').keyup(function(event){
 			getAndSetNumberOfWords();
+			if(getNumberOfWords($('#usr_wr').val()) >= getNumberOfWords($('#def_wr').text()))
+			{
+				activateRepeatButton();
+			}
+			else
+			{
+				deactivateRepeatButton();
+			}
+
 			if(isChecked())
 			{
 				highlightword();
@@ -377,20 +427,22 @@ var timeinterval;
 		$('#rep').click(function(){
 			if($('#rep').attr('class') != 'btn disabled')
 			{
-				$('#num_back').text("0");
-				clearInterval(timeinterval);
-				getAndSetDefaultText1($('#loaded_text').text());
+				$('#rep_len').text(getNumberOfWords($('#usr_wr').val()));
+				$('#rep').hide();
 			}
 		});
 		$('#strt').click(function(){
+			resetIt();
 			$('#num_back').text("0");
 			clearInterval(timeinterval);
 			enableUserTextarea();
-			getAndSetDefaultText();
+			showParagraphs();
 		});
 
 		$('#set').click(function(){
 			var tm = parseInt($('#tm-sel').val());
+			var txt = decodeURI($('#p-sel').val());
+			getAndSetDefaultText(txt);
 			var deadline = Date.parse(new Date())+tm*60*1000;
 			initializeClock('clock',deadline);
 		});
@@ -414,7 +466,6 @@ var timeinterval;
 	});
 
 </script>
-
 
 </body>
 

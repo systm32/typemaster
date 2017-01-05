@@ -26,6 +26,9 @@
     src: url("../fonts/ASEES.TTF");
 }
 
+::-webkit-scrollbar { 
+    display: none; 
+}
 
 .noselect {
    -webkit-touch-callout: none;
@@ -83,7 +86,7 @@
 
 					  <br><br>
 					  <label>
-					  	Repeat button activate after 300 words !
+					  	Repeat button activate after you complete the paragraph once !
 					  </label>
 				    </div>
 				    <div class="modal-footer">
@@ -211,6 +214,7 @@ var timeinterval;
 	    $('#def_wr').text(data);
 	    $('#loaded_text').text(data);			    
 		$('#total_words').text(getNumberOfWords(presentText(data)));
+		$('#rep_len').text(getNumberOfWords(data));
 		$('#usr_wr').val('');			
 	}
 
@@ -298,6 +302,8 @@ var timeinterval;
 		{
 			if(arr1[j].length>0 && arr2[i].length>0 && arr1[j] == arr2[i])
 			{
+				console.log(i+"="+j);
+				console.log(arr1[j]+"="+arr2[i]);
 				correct = correct + 1;
 			}
 		}
@@ -306,9 +312,12 @@ var timeinterval;
 
 	function getAccuracy(def_text,usr_text)
 	{
+		console.log($('#rep_len').text());
 		var correct = Math.floor(getNumberOfCorrectWords(def_text,usr_text));
-		var t_act_words = Math.floor(getNumberOfWords(def_text));
+		var t_act_words = Math.floor(getNumberOfWords(usr_text));
 		var accuracy = (correct*100)/t_act_words;
+		console.log(correct);
+		console.log(t_act_words);
 		return Math.round(accuracy*100)/100;
 	}
 
@@ -377,7 +386,7 @@ var timeinterval;
 		disableUserTextarea();
 		$('#usr_wr').keyup(function(event){
 			getAndSetNumberOfWords();
-			if(getNumberOfWords($('#usr_wr').val()) >= 20)
+			if(getNumberOfWords($('#usr_wr').val()) >= getNumberOfWords($('#def_wr').text()))
 			{
 				activateRepeatButton();
 			}
