@@ -60,8 +60,22 @@
     </nav>
 
     <div>
-    	<div style="padding: 20px;width: 100%">
-    		<div style="width: 50%;float: left;">
+    	
+
+    	<div style="padding: 20px">
+
+	    	
+
+	    	<div style="width: 100%;float: left" class="noselect">	    		
+	    		<span>ਮੌਜੂਦਾ ਪੱਧਰ : </span><span id="curr_level">1</span>
+	    		<div id="def_wr" style="height: 160px;overflow:scroll;border:3px solid blue;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!</div>
+	       		<b>
+	    		<span>ਕੁੱਲ ਸ਼ਬਦ ਦੀ ਗਿਣਤੀ : </span>
+	    		<span id = "total_words">0</span>
+	    		</b>
+	    	</div>
+
+	    	<div style="margin-top:25px;width: 50%;float: left;">
     			<a id="rep" class="waves-effect waves-light btn modal-trigger" href="#modal1" style="margin: [20px,0,20px,0]" href="#" ><b>ਦੁਹਰਾਉ</b></a>
     			<a id="strt" class="waves-effect waves-light btn modal-trigger" href="#modal1" style="margin: [20px,0,20px,0]"><b>ਸ਼ੁਰੂ</b></a>
 
@@ -73,6 +87,7 @@
 					    <option value="2" selected>2 ਮਿੰਟ</option>
 					    <option value="3">3 ਮਿੰਟ</option>
 					    <option value="5">5 ਮਿੰਟ</option>
+					    <option value="10">10 ਮਿੰਟ</option>
 					  </select>
 
 					  <label>	ਪੈਰਾ ਚੁਣੋ !</label>
@@ -93,16 +108,13 @@
 
     		</div>
 
-    		<div style="width: 50%;float: left;">
+    		<div style="margin-top:20px;width: 50%;float: left;">
 				<span style="margin: 8px;font-size: 30px">ਟਾਈਮ ਬਾਕੀ : </span><span style = "font-size:30px " id="clock">_:__</span>    			
     		</div>
-    	</div>
 
-    	<div style="padding: 20px">
-
-	    	<div style="width: 49%;float: right">
+	    	<div style="width: 100%;float: right">
 	    		<span>&nbsp</span>
-	    		<textarea id="usr_wr"  style="height: 300px;border:3px solid red;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px" autofocus=""></textarea>
+	    		<textarea id="usr_wr"  style="height: 150px;border:3px solid red;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px" autofocus=""></textarea>
 	    		<b>
 	    			<span>ਲਿਖਿਆ ਕੁੱਲ ਸ਼ਬਦ : </span>
 	    			<span id="total_written_words">0</span>
@@ -114,18 +126,9 @@
       					<label for="highlight">Do you want to highlight current word?</label>
 	    				</p>
 	    				<div style="width: 100%">
-    		<a id = "submit" class="waves-effect waves-light btn" style="float:right;margin: 0px"  ><b>&nbsp Submit &nbsp</b></a>
-    	</div>	
+				    		<a id = "submit" class="waves-effect waves-light btn" style="float:right;margin: 0px"  ><b>&nbsp Submit &nbsp</b></a>
+				    	</div>	
 	    		</div>
-	    	</div>
-
-	    	<div style="width: 49%;float: left" class="noselect">	    		
-	    		<span>ਮੌਜੂਦਾ ਪੱਧਰ : </span><span id="curr_level">1</span>
-	    		<div id="def_wr" style="height: 300px;overflow:scroll;border:3px solid blue;resize: none;padding: 10px;font-family: PunjabiFont;font-size: 18px;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;" readonly>ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!</div>
-	       		<b>
-	    		<span>ਕੁੱਲ ਸ਼ਬਦ ਦੀ ਗਿਣਤੀ : </span>
-	    		<span id = "total_words">0</span>
-	    		</b>
 	    	</div>
 
     	</div>
@@ -308,14 +311,22 @@ var timeinterval;
 		return correct;
 	}
 
+	function getMaximum(a, b)
+	{
+		if(a>b)
+			return a;
+		else 
+			return b;
+	}
+
 	function getAccuracy(def_text,usr_text)
 	{
 		console.log($('#rep_len').text());
 		var correct = Math.floor(getNumberOfCorrectWords(def_text,usr_text));
 		var t_act_words = Math.floor(getNumberOfWords(usr_text));
-		var accuracy = (correct*100)/t_act_words;
-		console.log(correct);
-		console.log(t_act_words);
+		var t_act_words1 = Math.floor(getNumberOfWords(def_text));
+		var div = getMaximum(t_act_words,t_act_words1);
+		var accuracy = (correct*100)/div;
 		return Math.round(accuracy*100)/100;
 	}
 
@@ -348,7 +359,7 @@ var timeinterval;
 		$('#rep').show();
 		$('#total_words').text("0");
 		$('#usr_wr').val('');
-		$('#def_wr').text("ਸਟਾਰਟ ਬਟਨ 'ਤੇ ਕਲਿੱਕ ਕਰੋ ਸ਼ੁਰੂ ਕਰਨ ਲਈ!");
+		$('#def_wr').text("Click on start button to start !");
 		clearInterval(timeinterval);		
 	}
 
@@ -357,7 +368,8 @@ var timeinterval;
 		var correct = Math.floor(getNumberOfCorrectWords(def_text,usr_text));
 		var t = $('#clock').text();
 		var s = t.split(":");
-		var min = 5-parseInt(s[0]);
+		var tm = parseInt($('#deadline').text());
+		var min = tm-parseInt(s[0])-1;
 		var sec = 60-parseInt(s[1]);
 		var total = min*60+sec;
 		var min = total/60;
@@ -366,12 +378,12 @@ var timeinterval;
 	}
 
 	function showParagraphs(){
-		$.get( "http://localhost/typemaster/update1.php", { 'tag': "6", 'level':getPresentLevel() }).done(function( data ) {
+		$.get( "http://localhost/typemaster/update1.php", { 'tag': "5", 'level':getPresentLevel() }).done(function( data ) {
 			    var para_array = JSON.parse(data);
 			    var html = '';
 			    for(var i=0;i<para_array.length;i++)
 			    {
-			    	html += '<option style="overflow:hidden;font-family:PunjabiFont" value="'+encodeURI(para_array[i].value)+'">'+para_array[i].value.substr(0,70)+'...'+'</option>';
+			    	html += '<option style="overflow:hidden" value="'+encodeURI(para_array[i].value)+'">'+para_array[i].value.substr(0,70)+'...'+'</option>';
 			    }
 			    $('#p-sel').html(html);
 			});
@@ -383,6 +395,13 @@ var timeinterval;
 		$('.modal-trigger').leanModal({dismissible: false});
 		disableUserTextarea();
 		$('#usr_wr').keyup(function(event){
+			if(!timeinterval)
+			{
+				console.log("timeinterval");		
+				var tm = parseInt($('#deadline').text());	
+				var deadline = Date.parse(new Date())+tm*60*1000;
+				initializeClock('clock',deadline);
+			}
 			getAndSetNumberOfWords();
 			if(getNumberOfWords($('#usr_wr').val()) >= getNumberOfWords($('#def_wr').text()))
 			{
@@ -443,8 +462,10 @@ var timeinterval;
 			var tm = parseInt($('#tm-sel').val());
 			var txt = decodeURI($('#p-sel').val());
 			getAndSetDefaultText(txt);
-			var deadline = Date.parse(new Date())+tm*60*1000;
-			initializeClock('clock',deadline);
+			$('#deadline').text(tm);
+			$('#clock').text(tm+':'+'00');
+			/*var deadline = Date.parse(new Date())+tm*60*1000;
+			initializeClock('clock',deadline);*/
 		});
 		$('#submit').click(function(){
 			var num_back = $('#num_back').text();
@@ -466,6 +487,7 @@ var timeinterval;
 	});
 
 </script>
+
 
 </body>
 
